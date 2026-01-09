@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  # Main Restaurant API application
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: restaurant-api
+    ports:
+      - "3000:3000"
+    environment:
+      NODE_ENV: development
+      DB_PATH: /app/restaurant.db
+    networks:
+      - restaurant-network
+    # For development with hot reload
+    volumes:
+      - .:/app
+      - /app/node_modules
+    # Ensure container restarts if it crashes
+    restart: unless-stopped
+    # Show logs
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+networks:
+  restaurant-network:
+    driver: bridge
